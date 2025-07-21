@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "808886358474",
+    "firebase_url": "https://demofirebase-d3191.firebaseio.com",
+    "project_id": "demofirebase-d3191",
+    "storage_bucket": "demofirebase-d3191.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:808886358474:android:8ff5872e39d651a0f4bf33",
+        "android_client_info": {
+          "package_name": "com.halu.mytask"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiCDaKDBxx8mYMcmfDhuRWyW7fBiVSQho"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
