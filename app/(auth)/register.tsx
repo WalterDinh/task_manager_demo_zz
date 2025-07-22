@@ -13,8 +13,7 @@ export default function RegisterScreen() {
     <Theme name={theme}>
       <View bg={'$background'} style={{ flex: 1 }}>
         <RegisterForm />
-        <ToastViewport backgroundColor={'$primary'} alignItems="center" alignSelf="center" bottom={0} />
-        <AppToast />
+        <ToastViewport alignItems="center" alignSelf="center" bottom={0} />
       </View>
     </Theme>
   );

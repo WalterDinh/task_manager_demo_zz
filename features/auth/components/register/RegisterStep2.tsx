@@ -45,7 +45,7 @@ export default function RegisterStep2({
                   style={{ alignItems: "center", marginBottom: 8 }}
                 >
                   <RadioGroup.Item
-                    backgroundColor={"$color"}
+                    backgroundColor={"$background"}
                     value={job}
                     id={job}
                   >
@@ -66,7 +66,7 @@ export default function RegisterStep2({
           <Button.Text color={"$color"}>Previous</Button.Text>
         </Button>
         <Button bg={"$primary"} onPress={handleSubmit(onSubmit)}>
-          <Button.Text color={"$color"}>Next</Button.Text>
+          <Button.Text color={"white"}>Next</Button.Text>
         </Button>
       </XStack>
     </View>

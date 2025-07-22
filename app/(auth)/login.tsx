@@ -43,7 +43,6 @@ export default function LoginScreen() {
             handleLogin={handleLogin}
           />
           <ToastViewport  alignItems="center" alignSelf="center" bottom={0} />
-          <AppToast />
         </SafeAreaView>
       </YStack>
     </Theme>

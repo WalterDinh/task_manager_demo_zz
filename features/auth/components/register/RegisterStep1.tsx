@@ -64,8 +64,9 @@ export default function RegisterStep1({
         style={{ marginTop: 24,  justifyContent: "space-between" }}
       >
         <View />
-        <Button onPress={handleSubmit(onSubmit)}>
-          <Button.Text>Next</Button.Text>
+      
+          <Button bg={"$primary"} onPress={handleSubmit(onSubmit)}>
+          <Button.Text color={"white"}>Next</Button.Text>
         </Button>
       </XStack>
     </View>

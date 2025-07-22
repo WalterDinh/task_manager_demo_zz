@@ -39,19 +39,19 @@ export default function useHandleLogin() {
       }
       router.replace("/(tabs)/home");
     } catch (err) {
-      const error = err as FirebaseError;
+      const error = err as { code: string; message: string };
       if (error.code === "auth/user-not-found") {
-        toast.show("User not found. Please register.", {
+        toast.show("Error", {
           type: "error",
           message: "User not found. Please register.",
         });
       } else if (error.code === "auth/wrong-password") {
-        toast.show("Incorrect password. Please try again.", {
+        toast.show("Error", {
           type: "error",
           message: "Incorrect password. Please try again.",
         });
       } else {
-        toast.show("Login failed. Please try again.", {
+        toast.show("Error", {
           type: "error",
           message: error.message,
         });
