@@ -1,11 +1,21 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { FlatList } from "react-native";
-import { useRegisterStore } from "../../../store/registerStore";
 import {
   createUserWithEmailAndPassword,
   getAuth,
 } from "@react-native-firebase/auth";
-
+import {
+  collection,
+  doc,
+  setDoc,
+  serverTimestamp,
+  FirestoreError,
+} from "firebase/firestore";
+import { useRegisterStore } from "@/store/useRegisterStore";
+import { useLoadingStore } from "@/store/useLoadingStore";
+import { useRouter } from "expo-router";
+import { useToastController } from "@tamagui/toast";
+import { db } from "@/firebase/config";
 export const useHandleRegister = () => {
   const ref = useRef<FlatList>(null);
   const {
@@ -16,25 +26,56 @@ export const useHandleRegister = () => {
     handleNextStep,
     handlePreviousStep,
   } = useRegisterStore();
+  const showLoading = useLoadingStore.getState().showLoading;
+  const hideLoading = useLoadingStore.getState().hideLoading;
+  const { back } = useRouter();
+
+  useEffect(() => {
+    // Reset step to 0 when the component mounts
+    return () => {
+      setStep(0);
+      ref.current?.scrollToIndex({ index: 0, animated: true });
+    };
+  }, []);
 
   // Wrap next/prev to pass ref
   const nextStep = () => handleNextStep(ref);
   const prevStep = () => handlePreviousStep(ref);
+  const toast = useToastController();
 
   const onRegister = async () => {
     try {
-      const res = await createUserWithEmailAndPassword(
+      showLoading();
+      const userCredential = await createUserWithEmailAndPassword(
         getAuth(),
         formData?.email,
         formData?.password
       );
-      const currentUser = getAuth().currentUser;
-      const uid = currentUser ? currentUser.uid : null;
-      // await db.collection("users").doc(uid).set({
-      //   email: formData.email,
-      //   createdAt: firestore.FieldValue.serverTimestamp(),
-      // });
-    } catch (error) {}
+
+      const uid = userCredential.user.uid;
+
+      await setDoc(doc(collection(db, "users"), uid), {
+        email: formData.email,
+        uid: uid,
+        displayName: formData.username,
+        job: formData.job,
+        createdAt: serverTimestamp(),
+      });
+      toast.show("Successfully created!", {
+        message: "",
+        type: "success",
+      });
+      back();
+    } catch (error) {
+      const err = error as FirestoreError;
+      toast.show("Registration error:", {
+        message: err.message,
+        type: "error" ,
+      });
+      console.log("Registration error:", err.message);
+    } finally {
+      hideLoading();
+    }
   };
 
   return {
@@ -45,5 +86,6 @@ export const useHandleRegister = () => {
     handleChange,
     handleNextStep: nextStep,
     handlePreviousStep: prevStep,
+    onRegister,
   };
 };

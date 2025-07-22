@@ -1,15 +1,21 @@
-import { View, Text, TextInput, Button } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import RegisterForm from "@/features/auth/components/register";
+import { ToastViewport } from "@tamagui/toast";
+import AppToast from "@/components/toast/AppToast";
+import { Theme, View } from "tamagui";
+import { useThemeStore } from "@/store/themeStore";
 
 export default function RegisterScreen() {
-  const [email, setEmail] = useState("");
-  const router = useRouter();
+  const { theme } = useThemeStore();
 
   return (
-    <View style={{ flex: 1}}>
-      <RegisterForm />
-    </View>
+    <Theme name={theme}>
+      <View bg={'$background'} style={{ flex: 1 }}>
+        <RegisterForm />
+        <ToastViewport backgroundColor={'$primary'} alignItems="center" alignSelf="center" bottom={0} />
+        <AppToast />
+      </View>
+    </Theme>
   );
 }

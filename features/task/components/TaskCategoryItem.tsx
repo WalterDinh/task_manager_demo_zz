@@ -4,7 +4,7 @@ interface TaskCategoryItemProps {
   // Define any props if needed
   title: string;
   number: number;
-  color?: "$background" | "$accent5" | "$color04" | undefined;
+  color?: any;
   active?: boolean;
   onPress?: () => void;
 }
@@ -14,19 +14,22 @@ export default function TaskCategoryItem({
   title,
   number,
   color,
+  onPress,
 }: TaskCategoryItemProps) {
+  
   return (
     <Button
-      bg={active ? "$accent5" : "$color04"}
+      bg={active ? '$primary' : "#f0f0f0"} // Use a default color if not active
       justify={"center"}
       rounded={"$9"}
       items={"center"}
       mr="$3"
+      onPress={onPress}
     >
       <XStack items={"center"} justify={"center"}>
-        <Text fontSize={"$5"}>{title}</Text>
+        <Text fontWeight={'600'} color={'black'} fontSize={"$5"}>{title}</Text>
         <Circle
-        //   bg={color ?? "$background"}
+          bg={color} // Use template literal to set the background color
           size={30}
           justify="center"
           items="center"

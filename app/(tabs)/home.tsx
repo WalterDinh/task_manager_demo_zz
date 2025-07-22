@@ -4,6 +4,9 @@ import { Activity, Airplay } from "@tamagui/lucide-icons";
 
 import {
   Button,
+  ScrollView,
+  Theme,
+  useTheme,
   useWindowDimensions,
   View,
   XGroup,
@@ -14,18 +17,41 @@ import { useThemeStore } from "@/store/themeStore";
 import HeaderDashboard from "@/features/dashboard/components/HeaderDashboard";
 import TaskSummary from "@/features/dashboard/components/TaskSummary";
 import TaskStatisticsChart from "@/features/dashboard/components/TaskStatisticsChart";
+import { useTaskCountStore } from "@/store/useTaskCountStore";
+import { useEffect } from "react";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function HomeScreen() {
-  const { theme, toggleTheme } = useThemeStore();
   const width = useWindowDimensions().width;
+  const listenTaskCounts = useTaskCountStore((s) => s.listenTaskCounts);
+  const user = useAuthStore((s) => s.user);
+
+  const stopListening = useTaskCountStore((s) => s.stopListening);
+  const { theme } = useThemeStore();
+ 
+
+    useEffect(() => {
+    if (user) {
+      listenTaskCounts();
+      return () => stopListening();
+    }
+  }, [user]);
   return (
-    <View style={styles.container}>
-      <HeaderDashboard />
-      <YStack paddingBlock={"$3"} gap="$3">
-        <TaskSummary />
-        <TaskStatisticsChart width={width} />
-      </YStack>
-    </View>
+    <Theme name={theme}>
+      <View bg={"$background"} style={styles.container}>
+        <HeaderDashboard />
+        <YStack flex={1} paddingBlock={"$3"} gap="$3">
+          <ScrollView
+            flex={1}
+            contentContainerStyle={{ pb: 100, grow: 1 }}
+            showsVerticalScrollIndicator={false}
+          >
+            <TaskSummary />
+            <TaskStatisticsChart width={width} />
+          </ScrollView>
+        </YStack>
+      </View>
+    </Theme>
   );
 }
 
@@ -37,7 +63,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   stepContainer: {
     gap: 8,

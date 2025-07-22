@@ -8,12 +8,12 @@ export function SimpleChip({
   label,
 }: {
   size?: SizeTokens;
-  color?: ThemeName;
+  color?: any;
   label?: string;
 }) {
   return (
-    <Chip border  theme={color as ThemeName} size={size} key={color}>
-      <Chip.Text>{label}</Chip.Text>
+    <Chip border bg={color} size={size} key={color}>
+      <Chip.Text fontWeight={'bold'} color={'white'}>{label}</Chip.Text>
     </Chip>
   );
 }

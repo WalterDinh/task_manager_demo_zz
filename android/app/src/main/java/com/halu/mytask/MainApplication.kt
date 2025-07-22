@@ -1,4 +1,4 @@
-package com.sampleexpozustandandreactquery
+package com.halu.mytask
 
 import android.app.Application
 import android.content.res.Configuration

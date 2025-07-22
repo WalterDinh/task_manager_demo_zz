@@ -1,10 +1,11 @@
 import { View, Animated, Pressable } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { YStack, XStack, SizableText, useTheme } from "tamagui";
+import { YStack, XStack, SizableText, useTheme, Theme } from "tamagui";
 import { LayoutDashboard, ListTodo, Plus } from "@tamagui/lucide-icons";
 import { useRef, useEffect } from "react";
 import { SpecialTabButton } from "./SpecialTabButton";
+import { useThemeStore } from "@/store/themeStore";
 
 const iconMap = [LayoutDashboard, ListTodo]; // lucide icon components
 
@@ -14,11 +15,12 @@ export default function CustomTabBar({
   navigation,
 }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
-  const theme = useTheme();
+  const { theme } = useThemeStore();
   const routes = state.routes;
   console.log("routes", routes);
 
   return (
+    <Theme name={theme}>
     <YStack
       position="absolute"
       b={0}
@@ -65,7 +67,7 @@ export default function CustomTabBar({
               <XStack items="center" justify="center" gap="$2">
                 <IconComponent
                   size={24}
-                  color={isFocused ? theme.color.get() : "#999"}
+                  color={isFocused ? '$primary' : "#999"}
                 />
 
                 <Animated.View
@@ -91,5 +93,6 @@ export default function CustomTabBar({
         })}
       </XStack>
     </YStack>
+    </Theme>
   );
 }

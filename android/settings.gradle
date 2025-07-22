@@ -21,7 +21,7 @@ extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
   }
 }
 
-rootProject.name = 'sampleexpozustandandreactquery'
+rootProject.name = 'sample_expo_zustand_and_react_query'
 
 dependencyResolutionManagement {
   versionCatalogs {

@@ -39,7 +39,9 @@ export default function TaskSummaryItem({
     >
       <YStack justify="flex-start" items="flex-start">
         <H6>{totalTasks}</H6>
-        <Label fontSize={"$5"}>{title}</Label>
+        <Label lineHeight={24} fontSize={"$5"}>
+          {title}
+        </Label>
       </YStack>
     </Button>
   );

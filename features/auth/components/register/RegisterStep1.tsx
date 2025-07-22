@@ -1,37 +1,73 @@
-import { useState } from "react";
-import { useRouter } from "expo-router";
-import {
-  H2,
-  Input,
-  Theme,
-  XStack,
-  YStack,
-  Button,
-  Text,
-  RadioGroup,
-  View,
-  useWindowDimensions,
-} from "tamagui";
+import { Button, View, XStack, useWindowDimensions } from "tamagui";
 import { InputWithLabel } from "@/components/input/InputWithLabel";
+import { Controller, useForm } from "react-hook-form";
 
-export default function RegisterStep1({ handleLogin, handleChange }: any) {
-  const [username, setUsername] = useState("");
+interface RegisterStep1Props {
+  handleChange: (field: string, value: string) => void;
+  onValid: () => void;
+}
+
+export default function RegisterStep1({
+  handleChange,
+  onValid,
+}: RegisterStep1Props) {
   const { width } = useWindowDimensions();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: { email: "", username: "" },
+    mode: "onTouched",
+  });
+
+  const onSubmit = (data: any) => {
+    handleChange("email", data.email);
+    handleChange("username", data.username);
+    onValid();
+  };
+
   return (
-    <View width={width - 64} p="$4" gap="$1">
-      <YStack flex={1} gap="$1">
-        <InputWithLabel
-          labelText="Tên"
-          onChangeText={(v: string) => handleChange("name", v)}
+    <View flex={1} width={width - 32} p="$4" gap="$1">
+      <View flex={1}>
+        <Controller
+          control={control}
+          name="email"
+          rules={{ required: true, pattern: /^\S+@\S+$/i }}
+          render={({ field: { onChange, value, onBlur } }) => (
+            <InputWithLabel
+              labelText="Email"
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              errorMessage={errors.email ? "Invalid email" : ""}
+            />
+          )}
         />
-        <YStack style={{ marginTop: 16 }}>
-          <InputWithLabel
-            labelText="Ngày sinh (dd/mm/yyyy)"
-            onChangeText={(v: string) => handleChange("dob", v)}
-            focusOnMount
-          />
-        </YStack>
-      </YStack>
+        <Controller
+          control={control}
+          name="username"
+          rules={{ required: true, minLength: 2 }}
+          render={({ field: { onChange, value, onBlur } }) => (
+            <InputWithLabel
+              labelText="User Name"
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              errorMessage={errors.username ? "Name is required" : ""}
+            />
+          )}
+        />
+      </View>
+      <XStack
+        self={"stretch"}
+        style={{ marginTop: 24,  justifyContent: "space-between" }}
+      >
+        <View />
+        <Button onPress={handleSubmit(onSubmit)}>
+          <Button.Text>Next</Button.Text>
+        </Button>
+      </XStack>
     </View>
   );
 }

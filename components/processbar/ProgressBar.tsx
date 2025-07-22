@@ -39,7 +39,7 @@ export function ProgressBar({ steps = 3, activeStep = 1 }: ProgressBarProps) {
         animation="200ms"
         height={isActive ? 8 : 6}
         rounded={100}
-        bg={isActive ? '$blue10' : '$accent5'}
+        bg={isActive ? '$primary' : '$accent5'}
         mx={4}
       />
     )

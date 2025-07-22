@@ -1,41 +1,37 @@
-import { SafeAreaView } from "react-native-safe-area-context";
 import {
-  Button,
-  H2,
-  H3,
   ScrollView,
-  SelectIcon,
-  Text,
   View,
-  XStack,
 } from "tamagui";
-import { Bell } from "@tamagui/lucide-icons";
 import TaskCategoryItem from "./TaskCategoryItem";
+import { TaskStatus } from "../types/ITask";
+import { useTaskCountStore } from "@/store/useTaskCountStore";
+import { Dispatch, SetStateAction } from "react";
 
-const listCategories = [
+const listTaskTypes: {
+  status: TaskStatus | "all";
+  title: string;
+  color: string;
+}[] = [
   {
-    id: "1",
-    title: "Work",
-    number: 5,
-    active: true,
-    color: "$blue5",
+    status: "all",
+    title: "All",
+    color: "#acacac", // Default color for "All" category
   },
-  {
-    id: "2",
-    title: "Personal",
-    number: 3,
-    active: false,
-    color: "$blue5",
-  },
-  {
-    id: "3",
-    title: "Shopping",
-    number: 2,
-    active: false,
-    color: "$blue5",
-  },
+  { status: "open", title: "Open", color: "$yellow5" },
+  { status: "in-progress", title: "In Progress", color: "$blue5" },
+  { status: "pending", title: "Pending", color: "$red5" },
+  { status: "completed", title: "Completed", color: "$green5" },
 ];
-export default function TaskCategory() {
+export default function TaskCategory({
+  status,
+  setStatus,
+}: {
+  status: string;
+  setStatus: Dispatch<SetStateAction<TaskStatus>>;
+}) {
+  const counts = useTaskCountStore((s) => s.counts);
+  const total = useTaskCountStore((s) => s.total);
+
   return (
     <View width={"100%"} bg={"$background"}>
       <ScrollView
@@ -44,14 +40,16 @@ export default function TaskCategory() {
         px={"$4"}
         width={"100%"}
       >
-        {listCategories.map((category) => (
+        {listTaskTypes.map((category) => (
           <TaskCategoryItem
-            key={category.id}
+            key={category.status}
             title={category.title}
-            number={category.number}
-            active={category.active}
+            number={
+              category.status == "all" ? total : counts[category.status] || 0
+            }
+            active={category.status === status}
             color={category.color}
-            onPress={() => console.log(`Selected category: ${category.title}`)}
+            onPress={() => setStatus(category.status)}
           />
         ))}
       </ScrollView>

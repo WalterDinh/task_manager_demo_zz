@@ -1,13 +1,14 @@
-import { create } from 'zustand';
-import { FlatList } from 'react-native';
+import { create } from "zustand";
+import { FlatList } from "react-native";
 
 interface RegisterState {
   step: number;
   formData: {
-    name: string;
+    email: string;
     username: string;
     job: string;
     password: string;
+    prePassword: string;
   };
   setStep: (step: number) => void;
   handleChange: (field: string, value: string) => void;
@@ -18,10 +19,11 @@ interface RegisterState {
 export const useRegisterStore = create<RegisterState>((set, get) => ({
   step: 0,
   formData: {
-    name: '',
-    username: '',
-    job: '',
-    password: '',
+    email: "",
+    username: "",
+    job: "",
+    password: "",
+    prePassword: "",
   },
   setStep: (step) => set({ step }),
   handleChange: (field, value) =>
