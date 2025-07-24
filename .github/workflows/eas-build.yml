@@ -40,11 +40,20 @@ jobs:
 
       - name: Write Firebase credentials
         run: echo '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}' > ${{ github.workspace }}/firebase-service-account.json
+      
+      - name: Check if APK exists
+        run: |
+         ls -lh android/app/build/outputs/apk/release/
+         if [ ! -f android/app/build/outputs/apk/release/app-release.apk ]; then
+           echo "APK not found!"
+           exit 1
+         fi
 
       - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_ANDROID_APP_ID }}
-          file: ./builds/*.apk
+          file: android/app/build/outputs/apk/release/app-release.apk
+          groups: testers
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/firebase-service-account.json
