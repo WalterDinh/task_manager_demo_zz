@@ -29,25 +29,22 @@ jobs:
         run: npm install -g eas-cli
 
       - name: Authenticate with EAS
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-        env:
-          EXPO_TOKEN: ${{ secrets.EAS_TOKEN }}
+        run: eas login --token ${{ secrets.EAS_TOKEN }}
 
-      - name: Build app
-        env:
-          EXPO_TOKEN: ${{ secrets.EAS_TOKEN }}
-        run: eas build --platform android --non-interactive --profile preview
-
-      - name: Trigger EAS Android build
+      - name: Build app with EAS
         id: eas-build
+        env:
+          EXPO_TOKEN: ${{ secrets.EAS_TOKEN }}
         run: |
           eas build --platform android --non-interactive --profile preview --json > build-result.json
-          echo "BUILD_URL=$(cat build-result.json | jq -r .artifacts.buildUrl)" >> $GITHUB_ENV
+          BUILD_URL=$(cat build-result.json | jq -r '.artifacts.android.buildUrl // .artifacts.buildUrl')
+          echo "BUILD_URL=$BUILD_URL" >> $GITHUB_ENV
 
       - name: Download built APK from EAS
         run: |
           mkdir -p builds
-          curl -L $BUILD_URL -o builds/app.apk
+          curl -L "$BUILD_URL" -o builds/app.apk
+
       - name: Write Firebase credentials
         run: echo '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}' > ${{ github.workspace }}/firebase-service-account.json
 
