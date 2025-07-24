@@ -28,9 +28,6 @@ jobs:
       - name: Install EAS CLI
         run: npm install -g eas-cli
 
-      - name: Authenticate with EAS
-        run: eas login --token ${{ secrets.EAS_TOKEN }}
-
       - name: Build app with EAS
         id: eas-build
         env:
