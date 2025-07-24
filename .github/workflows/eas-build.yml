@@ -21,16 +21,18 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
-        
+
       - name: Install Expo CLI
         run: npm install -g expo-cli
 
       - name: Install EAS CLI
         run: npm install -g eas-cli
 
-      - name: Log in to EAS
-        run: eas login --token ${{ secrets.EAS_TOKEN }}
-
+      - name: Authenticate with EAS
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+        env:
+          EXPO_TOKEN: ${{ secrets.EAS_TOKEN }}
+      
       - name: Build app
         run: eas build --platform android --non-interactive --profile preview
 
