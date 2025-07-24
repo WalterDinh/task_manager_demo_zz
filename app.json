@@ -55,6 +55,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "6feca164-6edd-45d5-a149-41beda296a79"
+      }
+    },
+    "owner": "congdd"
   }
 }
