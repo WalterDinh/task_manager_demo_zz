@@ -26,24 +26,20 @@ jobs:
         run: npm install -g expo-cli
 
       - name: Install EAS CLI
-        run: npm install -g eas-cli
-
-      - name: Build app with EAS
-        id: eas-build
-        env:
-          EXPO_TOKEN: ${{ secrets.EAS_TOKEN }}
-        run: |
-          eas build --platform android --non-interactive --profile preview --json > build-result.json
-          BUILD_URL=$(cat build-result.json | jq -r '.artifacts[] | select(.platform=="android") | .url')
-          echo "BUILD_URL=$BUILD_URL" >> $GITHUB_ENV
-
-      - name: Debug BUILD_URL
-        run: echo "BUILD_URL=$BUILD_URL"
-
-      - name: Download built APK from EAS
-        run: |
-          mkdir -p builds
-          curl -L "$BUILD_URL" -o builds/app.apk
+        run: yarn global add eas-cli@latest
+      - name: Setup EAS Build Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.eas-build-local
+          key: ${{ runner.os }}-eas-build-local-${{ hashFiles('**/package.json') }}
+          restore-keys: ${{ runner.os }}-eas-build-local-
+      - name: Verify EAS CLI Installation
+        run: eas --version
+      - name: Build Android APK
+        run: >-
+          eas build --platform android --profile production-apk --local --non-interactive
+          --output=./android-builds/app-production.apk
+        env: {}
 
       - name: Write Firebase credentials
         run: echo '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}' > ${{ github.workspace }}/firebase-service-account.json
@@ -53,7 +49,7 @@ jobs:
         with:
           appId: ${{ secrets.FIREBASE_ANDROID_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
-          file: builds/app.apk
+          file: ./android-builds/app-production.apk
           groups: testers
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/firebase-service-account.json
