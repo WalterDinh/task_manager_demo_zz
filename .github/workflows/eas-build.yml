@@ -38,22 +38,25 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EAS_TOKEN }}
         run: eas build --platform android --non-interactive --profile preview
 
+      - name: Trigger EAS Android build
+        id: eas-build
+        run: |
+          eas build --platform android --non-interactive --profile preview --json > build-result.json
+          echo "BUILD_URL=$(cat build-result.json | jq -r .artifacts.buildUrl)" >> $GITHUB_ENV
+
+      - name: Download built APK from EAS
+        run: |
+          mkdir -p builds
+          curl -L $BUILD_URL -o builds/app.apk
       - name: Write Firebase credentials
         run: echo '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}' > ${{ github.workspace }}/firebase-service-account.json
-      
-      - name: Check if APK exists
-        run: |
-         ls -lh android/app/build/outputs/apk/release/
-         if [ ! -f android/app/build/outputs/apk/release/app-release.apk ]; then
-           echo "APK not found!"
-           exit 1
-         fi
 
       - name: Upload to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_ANDROID_APP_ID }}
-          file: android/app/build/outputs/apk/release/app-release.apk
+          serviceCredentialsFileContent: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
+          file: builds/app.apk
           groups: testers
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/firebase-service-account.json
