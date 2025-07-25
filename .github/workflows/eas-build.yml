@@ -36,10 +36,12 @@ jobs:
       - name: Verify EAS CLI Installation
         run: eas --version
       - name: Build Android APK
+        env:  
+          EXPO_TOKEN: ${{ secrets.EAS_TOKEN }}
         run: >-
           eas build --platform android --profile production-apk --local --non-interactive
           --output=./android-builds/app-production.apk
-        env: {}
+   
 
       - name: Write Firebase credentials
         run: echo '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}' > ${{ github.workspace }}/firebase-service-account.json
