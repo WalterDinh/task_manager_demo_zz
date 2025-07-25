@@ -27,21 +27,28 @@ jobs:
 
       - name: Install EAS CLI
         run: yarn global add eas-cli@latest
+
+      - name: Accept Android SDK licenses
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;27.0.11902837"
+
       - name: Setup EAS Build Cache
         uses: actions/cache@v3
         with:
           path: ~/.eas-build-local
           key: ${{ runner.os }}-eas-build-local-${{ hashFiles('**/package.json') }}
           restore-keys: ${{ runner.os }}-eas-build-local-
+
       - name: Verify EAS CLI Installation
         run: eas --version
+
       - name: Build Android APK
-        env:  
+        env:
           EXPO_TOKEN: ${{ secrets.EAS_TOKEN }}
         run: >-
           eas build --platform android --profile production-apk --local --non-interactive
           --output=./android-builds/app-production.apk
-   
 
       - name: Write Firebase credentials
         run: echo '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}' > ${{ github.workspace }}/firebase-service-account.json
