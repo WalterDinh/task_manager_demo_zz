@@ -1,4 +1,4 @@
-name: EAS Build & Firebase Deploy
+name: EAS Build & TestFairy Deploy
 
 on:
   push:
@@ -50,15 +50,12 @@ jobs:
           eas build --platform android --profile production-apk --local --non-interactive
           --output=./android-builds/app-production.apk
 
-      - name: Write Firebase credentials
-        run: echo '${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}' > ${{ github.workspace }}/firebase-service-account.json
-
-      - name: Upload to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.FIREBASE_ANDROID_APP_ID }}
-          serviceCredentialsFileContent: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}
-          file: ./android-builds/app-production.apk
-          groups: testers
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/firebase-service-account.json
+      - name: Upload to TestFairy
+        run: |
+          curl -F "api_key=${{ secrets.TESTFAIRY_API_KEY }}" \
+               -F "file=@./android-builds/app-production.apk" \
+               -F "testers_groups=testers" \
+               -F "notify=on" \
+               -F "metadata.buildType=debug" \
+               -F "comment=CI build from branch ${{ github.ref }}" \
+               https://app.testfairy.com/api/upload
